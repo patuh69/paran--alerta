@@ -110,6 +110,44 @@
       if (error) throw error;
     },
 
+    async listAds(admin = false) {
+      let query = client.from("ads").select("*").order("created_at", { ascending: false });
+      if (!admin) query = query.eq("is_active", true);
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    },
+
+    async saveAd(ad, id, userId) {
+      const payload = {
+        advertiser: ad.advertiser,
+        title: ad.title,
+        description: ad.description,
+        button_text: ad.buttonText,
+        target_url: ad.targetUrl,
+        image_url: ad.image || null,
+        placement: "home_banner",
+        is_active: ad.isActive,
+        starts_at: ad.startsAt || null,
+        ends_at: ad.endsAt || null,
+        created_by: userId
+      };
+      if (id) {
+        delete payload.created_by;
+        const { data, error } = await client.from("ads").update(payload).eq("id", id).select().single();
+        if (error) throw error;
+        return data;
+      }
+      const { data, error } = await client.from("ads").insert(payload).select().single();
+      if (error) throw error;
+      return data;
+    },
+
+    async deleteAd(id) {
+      const { error } = await client.from("ads").delete().eq("id", id);
+      if (error) throw error;
+    },
+
     async listArticles(includePrivate = false) {
       let query = client.from("articles").select("*, profiles!articles_author_id_fkey(display_name, avatar_url, bio)").order("published_at", { ascending: false });
       if (!includePrivate) query = query.eq("status", "published");

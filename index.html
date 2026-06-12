@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Paraná Alerta, as notícias que movimentam a cidade.">
   <title>Paraná Alerta | Notícias da cidade</title>
-  <link rel="stylesheet" href="style.css?v=20260612-2">
+  <link rel="stylesheet" href="style.css?v=20260612-3">
 </head>
 <body>
   <div class="breaking"><strong>Plantão</strong><span>Aguardando atualização da redação</span><time>agora</time></div>
@@ -43,7 +43,7 @@
 
     <section class="most-read container"><div class="section-title"><div><span>O que está a movimentar a cidade</span><h2>Mais lidas</h2></div></div><div class="ranking-list"><div class="empty-ranking">O ranking será criado conforme as notícias receberem leituras.</div></div></section>
 
-    <section class="ad-strip container"><span>Publicidade</span><div><strong>ANUNCIE AQUI</strong><p>Leve a tua empresa até toda a cidade.</p></div><button class="contact-ad">Conhecer planos</button></section>
+    <section class="ad-strip container"><span>Publicidade</span><div class="ad-visual" hidden></div><div class="ad-copy"><strong>ANUNCIE AQUI</strong><p>Leve a tua empresa até toda a cidade.</p></div><button class="contact-ad">Conhecer planos</button></section>
 
     <section class="newsletter"><div class="container newsletter-inner"><div><span class="eyebrow">Não perca nada</span><h2>A cidade acontece.<br>Nós contamos.</h2></div><form id="newsletter-form"><label for="newsletter-email">Receba o resumo do dia</label><div><input id="newsletter-email" type="email" placeholder="teu@email.com" required><button>Quero receber</button></div><small id="newsletter-status">Sem spam. Apenas o que importa.</small></form></div></section>
     </div>
@@ -86,12 +86,13 @@
       <section class="newsroom-view" hidden>
         <div class="newsroom-head"><div><span class="eyebrow">Painel editorial</span><h2>Olá, Bellinha.</h2><p>A redação está pronta para mais uma história.</p></div><button class="logout-button">Sair</button></div>
         <div class="dashboard-stats"><div><strong id="published-count">0</strong><span>Publicadas</span></div><div><strong id="draft-count">0</strong><span>Rascunhos</span></div><div><strong>1.248</strong><span>Leituras hoje</span></div></div>
-        <div class="editor-tabs"><button class="editor-tab active" data-editor-tab="write">Nova notícia</button><button class="editor-tab" data-editor-tab="drafts">Rascunhos</button><button class="editor-tab" data-editor-tab="published">Publicadas</button><button class="editor-tab admin-only" data-editor-tab="messages" hidden>Mensagens <span class="message-badge" hidden>0</span></button><button class="editor-tab admin-only" data-editor-tab="journalists" hidden>Jornalistas <span class="pending-badge" hidden>0</span></button><button class="editor-tab" data-editor-tab="settings">Configurações</button></div>
+        <div class="editor-tabs"><button class="editor-tab active" data-editor-tab="write">Nova notícia</button><button class="editor-tab" data-editor-tab="drafts">Rascunhos</button><button class="editor-tab" data-editor-tab="published">Publicadas</button><button class="editor-tab admin-only" data-editor-tab="ads" hidden>Anúncios</button><button class="editor-tab admin-only" data-editor-tab="messages" hidden>Mensagens <span class="message-badge" hidden>0</span></button><button class="editor-tab admin-only" data-editor-tab="journalists" hidden>Jornalistas <span class="pending-badge" hidden>0</span></button><button class="editor-tab" data-editor-tab="settings">Configurações</button></div>
         <div class="editor-panel active" data-editor-panel="write">
           <form id="article-form" novalidate><label>Título<input id="article-title" required placeholder="Título da notícia"></label><label>Categoria<select id="article-category"><option>Cidade</option><option>Polícia</option><option>Economia</option><option>Eventos</option><option>Cultura</option><option>Opinião</option></select></label><label>Resumo<textarea id="article-summary" required placeholder="Conta o essencial da notícia"></textarea></label><label>Texto completo<textarea id="article-content" required placeholder="Escreve a matéria completa. Separa os parágrafos com uma linha em branco."></textarea></label><label>Imagem da notícia<input id="article-image" type="file" accept="image/png,image/jpeg,image/webp"></label><div class="image-preview" hidden><img alt="Pré-visualização da notícia"><button type="button" class="remove-image">Remover imagem</button></div><label>Autor<input id="article-author" required value="Bellinha" placeholder="Nome do jornalista"></label><div class="form-actions"><button type="button" class="preview-button">Pré-visualizar</button><button type="button" class="draft-button">Guardar rascunho</button><button type="submit">Publicar notícia</button></div><span class="form-status"></span></form>
         </div>
         <div class="editor-panel" data-editor-panel="drafts"><div class="draft-list"></div></div>
         <div class="editor-panel" data-editor-panel="published"><div class="published-list"></div></div>
+        <div class="editor-panel" data-editor-panel="ads"><div class="journalist-panel-head"><div><h3>Publicidade</h3><p>Crie e controle as campanhas exibidas na capa.</p></div><button type="button" class="new-ad-button">Novo anúncio</button></div><form id="ad-form" hidden><input id="ad-id" type="hidden"><label>Empresa ou anunciante<input id="ad-advertiser" required maxlength="100" placeholder="Nome da empresa"></label><label>Título<input id="ad-title" required maxlength="100" placeholder="Título da campanha"></label><label>Texto<textarea id="ad-description" required maxlength="240" placeholder="Mensagem curta do anúncio"></textarea></label><label>Texto do botão<input id="ad-button-text" required maxlength="40" value="Saiba mais"></label><label>Link do anúncio<input id="ad-target-url" type="url" required placeholder="https://..."></label><label>Imagem opcional<input id="ad-image" type="file" accept="image/png,image/jpeg,image/webp"></label><div class="ad-image-preview" hidden><img alt="Pré-visualização do anúncio"><button type="button" class="remove-ad-image">Remover imagem</button></div><div class="ad-date-grid"><label>Início<input id="ad-starts-at" type="datetime-local"></label><label>Fim<input id="ad-ends-at" type="datetime-local"></label></div><label class="ad-active-label"><input id="ad-active" type="checkbox" checked> Publicar anúncio</label><div class="form-actions"><button type="button" class="cancel-ad">Cancelar</button><button type="submit">Guardar anúncio</button></div><span class="ad-form-status"></span></form><div class="ad-list"></div><span class="ad-panel-status"></span></div>
         <div class="editor-panel" data-editor-panel="messages"><div class="journalist-panel-head"><div><h3>Caixa de entrada</h3><p>Mensagens enviadas pelo formulário público do jornal.</p></div><button type="button" class="refresh-messages">Atualizar</button></div><div class="message-list"></div><span class="message-panel-status"></span></div>
         <div class="editor-panel" data-editor-panel="journalists"><div class="journalist-panel-head"><div><h3>Equipe editorial</h3><p>Aprove candidaturas e controle o acesso à redação.</p></div><button type="button" class="refresh-journalists">Atualizar</button></div><div class="journalist-list"></div><span class="journalist-status"></span></div>
         <div class="editor-panel" data-editor-panel="settings"><form id="settings-form"><label>Texto do plantão<input id="breaking-input" maxlength="120" placeholder="Notícia urgente no topo do site"></label><label>Link do Discord<input id="discord-input" type="url" placeholder="https://discord.gg/..."></label><label>Instagram<input id="instagram-input" placeholder="@paranaalerta"></label><button>Guardar configurações</button><span class="settings-status"></span></form></div>
@@ -120,8 +121,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260612-2"></script>
-  <script src="supabase-client.js?v=20260612-2"></script>
-  <script src="script.js?v=20260612-2"></script>
+  <script src="supabase-config.js?v=20260612-3"></script>
+  <script src="supabase-client.js?v=20260612-3"></script>
+  <script src="script.js?v=20260612-3"></script>
 </body>
 </html>

@@ -17,6 +17,8 @@ let pendingArchiveId = null;
 let currentArticle = null;
 let editingArticleId = null;
 let activeSearchFilter = "todas";
+let currentAdImage = "";
+let adminAds = [];
 
 const topicData = {
   cidade: { title: "Cidade", description: "As decisões, histórias e mudanças que fazem parte do dia a dia dos moradores.", icon: "🏙️" },
@@ -374,6 +376,7 @@ document.querySelectorAll(".editor-tab").forEach(button => button.addEventListen
   document.querySelectorAll(".editor-panel").forEach(panel => panel.classList.toggle("active", panel.dataset.editorPanel === button.dataset.editorTab));
   if (button.dataset.editorTab === "drafts") renderDrafts();
   if (button.dataset.editorTab === "published") renderPublished();
+  if (button.dataset.editorTab === "ads") renderAdsAdmin();
   if (button.dataset.editorTab === "messages") renderContactMessages();
   if (button.dataset.editorTab === "journalists") renderJournalists();
   if (button.dataset.editorTab === "settings") loadSettings();
@@ -390,6 +393,187 @@ function journalistRoleLabel(role) {
 function contactMessageStatusLabel(status) {
   return { new: "Nova", read: "Lida", resolved: "Resolvida" }[status] || status;
 }
+
+function isAdCurrentlyActive(ad) {
+  const now = Date.now();
+  const starts = ad.starts_at ? new Date(ad.starts_at).getTime() : null;
+  const ends = ad.ends_at ? new Date(ad.ends_at).getTime() : null;
+  return ad.is_active && (!starts || starts <= now) && (!ends || ends >= now);
+}
+
+function renderPublicAd(ad = null) {
+  const strip = document.querySelector(".ad-strip");
+  const visual = strip.querySelector(".ad-visual");
+  const copy = strip.querySelector(".ad-copy");
+  const button = strip.querySelector("button");
+  if (!ad) {
+    visual.hidden = true;
+    visual.innerHTML = "";
+    copy.innerHTML = "<strong>ANUNCIE AQUI</strong><p>Leve a tua empresa até toda a cidade.</p>";
+    button.textContent = "Conhecer planos";
+    button.dataset.adUrl = "";
+    return;
+  }
+  visual.hidden = !ad.image_url;
+  visual.innerHTML = ad.image_url ? `<img src="${ad.image_url}" alt="${escapeHtml(ad.advertiser)}">` : "";
+  copy.innerHTML = `<strong>${escapeHtml(ad.title)}</strong><p>${escapeHtml(ad.description)} · ${escapeHtml(ad.advertiser)}</p>`;
+  button.textContent = ad.button_text;
+  button.dataset.adUrl = ad.target_url;
+}
+
+async function loadPublicAd() {
+  try {
+    const ads = await window.paranaData.listAds(false);
+    renderPublicAd(ads.find(isAdCurrentlyActive) || null);
+  } catch (error) {
+    console.warn("Não foi possível carregar publicidade:", error.message);
+  }
+}
+
+function updateAdImagePreview() {
+  const preview = document.querySelector(".ad-image-preview");
+  preview.hidden = !currentAdImage;
+  if (currentAdImage) preview.querySelector("img").src = currentAdImage;
+}
+
+function resetAdForm() {
+  document.querySelector("#ad-form").reset();
+  document.querySelector("#ad-id").value = "";
+  document.querySelector("#ad-button-text").value = "Saiba mais";
+  document.querySelector("#ad-active").checked = true;
+  currentAdImage = "";
+  updateAdImagePreview();
+  document.querySelector("#ad-form").hidden = true;
+  document.querySelector(".ad-form-status").textContent = "";
+}
+
+function datetimeLocalValue(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+async function renderAdsAdmin() {
+  const list = document.querySelector(".ad-list");
+  const status = document.querySelector(".ad-panel-status");
+  list.innerHTML = '<div class="empty-drafts">A carregar anúncios...</div>';
+  status.textContent = "";
+  try {
+    adminAds = await window.paranaData.listAds(true);
+    list.innerHTML = adminAds.length ? adminAds.map(ad => {
+      const state = isAdCurrentlyActive(ad) ? "Em exibição" : ad.is_active ? "Agendado ou encerrado" : "Desativado";
+      return `<article class="ad-admin-card"><div><span class="status-pill">${state}</span><h3>${escapeHtml(ad.title)}</h3><p>${escapeHtml(ad.advertiser)} · ${escapeHtml(ad.description)}</p></div><div class="ad-admin-actions"><button data-edit-ad-id="${ad.id}">Editar</button><button data-toggle-ad-id="${ad.id}" data-toggle-value="${!ad.is_active}">${ad.is_active ? "Desativar" : "Ativar"}</button><button class="delete-ad" data-delete-ad-id="${ad.id}">Excluir</button></div></article>`;
+    }).join("") : '<div class="empty-drafts">Ainda não existem anúncios.</div>';
+  } catch (error) {
+    list.innerHTML = '<div class="empty-drafts">Não foi possível carregar os anúncios.</div>';
+    status.textContent = error.message;
+  }
+}
+
+document.querySelector(".new-ad-button").addEventListener("click", function () {
+  resetAdForm();
+  document.querySelector("#ad-form").hidden = false;
+  document.querySelector("#ad-advertiser").focus();
+});
+
+document.querySelector(".cancel-ad").addEventListener("click", resetAdForm);
+document.querySelector(".remove-ad-image").addEventListener("click", function () {
+  currentAdImage = "";
+  document.querySelector("#ad-image").value = "";
+  updateAdImagePreview();
+});
+
+document.querySelector("#ad-image").addEventListener("change", async function () {
+  const file = this.files[0];
+  if (!file) return;
+  const status = document.querySelector(".ad-form-status");
+  status.textContent = "A preparar imagem...";
+  try {
+    currentAdImage = await compressImage(file);
+    updateAdImagePreview();
+    status.textContent = "Imagem pronta.";
+  } catch (error) {
+    status.textContent = "Não foi possível carregar esta imagem.";
+  }
+});
+
+document.querySelector("#ad-form").addEventListener("submit", async function (event) {
+  event.preventDefault();
+  const status = document.querySelector(".ad-form-status");
+  const id = document.querySelector("#ad-id").value || null;
+  const ad = {
+    advertiser: document.querySelector("#ad-advertiser").value.trim(),
+    title: document.querySelector("#ad-title").value.trim(),
+    description: document.querySelector("#ad-description").value.trim(),
+    buttonText: document.querySelector("#ad-button-text").value.trim(),
+    targetUrl: document.querySelector("#ad-target-url").value.trim(),
+    image: currentAdImage,
+    startsAt: document.querySelector("#ad-starts-at").value ? new Date(document.querySelector("#ad-starts-at").value).toISOString() : null,
+    endsAt: document.querySelector("#ad-ends-at").value ? new Date(document.querySelector("#ad-ends-at").value).toISOString() : null,
+    isActive: document.querySelector("#ad-active").checked
+  };
+  if (ad.endsAt && ad.startsAt && new Date(ad.endsAt) <= new Date(ad.startsAt)) {
+    status.textContent = "A data final precisa ser posterior à data inicial.";
+    return;
+  }
+  status.textContent = "A guardar anúncio...";
+  try {
+    const session = await window.paranaData.getSession();
+    if (!session?.user) throw new Error("A sessão expirou.");
+    if (ad.image?.startsWith("data:")) {
+      status.textContent = "A enviar imagem...";
+      ad.image = await window.paranaData.uploadImage(ad.image, session.user.id);
+    }
+    await window.paranaData.saveAd(ad, id, session.user.id);
+    resetAdForm();
+    await renderAdsAdmin();
+    await loadPublicAd();
+    document.querySelector(".ad-panel-status").textContent = id ? "Anúncio atualizado." : "Anúncio criado.";
+  } catch (error) {
+    status.textContent = error.message || "Não foi possível guardar o anúncio.";
+  }
+});
+
+document.querySelector(".ad-list").addEventListener("click", async function (event) {
+  const editButton = event.target.closest("[data-edit-ad-id]");
+  const toggleButton = event.target.closest("[data-toggle-ad-id]");
+  const deleteButton = event.target.closest("[data-delete-ad-id]");
+  const status = document.querySelector(".ad-panel-status");
+  if (editButton) {
+    const ad = adminAds.find(item => item.id === editButton.dataset.editAdId);
+    if (!ad) return;
+    document.querySelector("#ad-id").value = ad.id;
+    document.querySelector("#ad-advertiser").value = ad.advertiser;
+    document.querySelector("#ad-title").value = ad.title;
+    document.querySelector("#ad-description").value = ad.description;
+    document.querySelector("#ad-button-text").value = ad.button_text;
+    document.querySelector("#ad-target-url").value = ad.target_url;
+    document.querySelector("#ad-starts-at").value = datetimeLocalValue(ad.starts_at);
+    document.querySelector("#ad-ends-at").value = datetimeLocalValue(ad.ends_at);
+    document.querySelector("#ad-active").checked = ad.is_active;
+    currentAdImage = ad.image_url || "";
+    updateAdImagePreview();
+    document.querySelector("#ad-form").hidden = false;
+    return;
+  }
+  try {
+    if (toggleButton) {
+      const ad = adminAds.find(item => item.id === toggleButton.dataset.toggleAdId);
+      await window.paranaData.saveAd({ advertiser: ad.advertiser, title: ad.title, description: ad.description, buttonText: ad.button_text, targetUrl: ad.target_url, image: ad.image_url, startsAt: ad.starts_at, endsAt: ad.ends_at, isActive: toggleButton.dataset.toggleValue === "true" }, ad.id);
+      status.textContent = "Estado do anúncio atualizado.";
+    }
+    if (deleteButton) {
+      if (!window.confirm("Excluir este anúncio definitivamente?")) return;
+      await window.paranaData.deleteAd(deleteButton.dataset.deleteAdId);
+      status.textContent = "Anúncio excluído.";
+    }
+    await renderAdsAdmin();
+    await loadPublicAd();
+  } catch (error) {
+    status.textContent = error.message || "Não foi possível atualizar o anúncio.";
+  }
+});
 
 async function refreshMessageBadge() {
   try {
@@ -1004,7 +1188,10 @@ document.addEventListener("click", function (event) {
   event.stopPropagation();
   showStaticPage("profile");
 });
-document.querySelector(".contact-ad").addEventListener("click", function () { showStaticPage("contact"); });
+document.querySelector(".contact-ad").addEventListener("click", function () {
+  if (this.dataset.adUrl) window.open(this.dataset.adUrl, "_blank", "noopener");
+  else showStaticPage("contact");
+});
 document.querySelector("#contact-form").addEventListener("submit", async function (event) {
   event.preventDefault();
   const status = document.querySelector(".contact-status");
@@ -1115,7 +1302,7 @@ journalistButton.onclick = function () {
 
 const initialSection = location.hash.slice(1) || "inicio";
 (async function initializeSupabaseSite() {
-  await syncArticlesFromSupabase();
+  await Promise.all([syncArticlesFromSupabase(), loadPublicAd()]);
   restorePublishedArticles();
   if (initialSection !== "inicio") showTopic(initialSection);
 })();
