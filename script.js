@@ -401,6 +401,16 @@ function isAdCurrentlyActive(ad) {
   return ad.is_active && (!starts || starts <= now) && (!ends || ends >= now);
 }
 
+function adAdminState(ad) {
+  const now = Date.now();
+  const starts = ad.starts_at ? new Date(ad.starts_at).getTime() : null;
+  const ends = ad.ends_at ? new Date(ad.ends_at).getTime() : null;
+  if (!ad.is_active) return "Desativado";
+  if (starts && starts > now) return `Agendado para ${new Date(ad.starts_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}`;
+  if (ends && ends < now) return `Encerrado em ${new Date(ad.ends_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}`;
+  return "Em exibição";
+}
+
 function renderPublicAd(ad = null) {
   const strip = document.querySelector(".ad-strip");
   const visual = strip.querySelector(".ad-visual");
@@ -481,8 +491,9 @@ async function renderAdsAdmin() {
   try {
     adminAds = await window.paranaData.listAds(true);
     list.innerHTML = adminAds.length ? adminAds.map(ad => {
-      const state = isAdCurrentlyActive(ad) ? "Em exibição" : ad.is_active ? "Agendado ou encerrado" : "Desativado";
-      return `<article class="ad-admin-card"><div><span class="status-pill">${state}</span><h3>${escapeHtml(ad.title)}</h3><p>${escapeHtml(ad.advertiser)} · ${escapeHtml(ad.description)}</p></div><div class="ad-admin-actions"><button data-edit-ad-id="${ad.id}">Editar</button><button data-toggle-ad-id="${ad.id}" data-toggle-value="${!ad.is_active}">${ad.is_active ? "Desativar" : "Ativar"}</button><button class="delete-ad" data-delete-ad-id="${ad.id}">Excluir</button></div></article>`;
+      const state = adAdminState(ad);
+      const publishNow = ad.is_active && !isAdCurrentlyActive(ad) ? `<button data-publish-ad-id="${ad.id}">Publicar agora</button>` : "";
+      return `<article class="ad-admin-card"><div><span class="status-pill">${state}</span><h3>${escapeHtml(ad.title)}</h3><p>${escapeHtml(ad.advertiser)} · ${escapeHtml(ad.description)}</p></div><div class="ad-admin-actions">${publishNow}<button data-edit-ad-id="${ad.id}">Editar</button><button data-toggle-ad-id="${ad.id}" data-toggle-value="${!ad.is_active}">${ad.is_active ? "Desativar" : "Ativar"}</button><button class="delete-ad" data-delete-ad-id="${ad.id}">Excluir</button></div></article>`;
     }).join("") : '<div class="empty-drafts">Ainda não existem anúncios.</div>';
   } catch (error) {
     list.innerHTML = '<div class="empty-drafts">Não foi possível carregar os anúncios.</div>';
@@ -556,6 +567,7 @@ document.querySelector("#ad-form").addEventListener("submit", async function (ev
 
 document.querySelector(".ad-list").addEventListener("click", async function (event) {
   const editButton = event.target.closest("[data-edit-ad-id]");
+  const publishButton = event.target.closest("[data-publish-ad-id]");
   const toggleButton = event.target.closest("[data-toggle-ad-id]");
   const deleteButton = event.target.closest("[data-delete-ad-id]");
   const status = document.querySelector(".ad-panel-status");
@@ -577,6 +589,12 @@ document.querySelector(".ad-list").addEventListener("click", async function (eve
     return;
   }
   try {
+    if (publishButton) {
+      const ad = adminAds.find(item => item.id === publishButton.dataset.publishAdId);
+      const futureEnd = ad.ends_at && new Date(ad.ends_at) > new Date() ? ad.ends_at : null;
+      await window.paranaData.saveAd({ advertiser: ad.advertiser, title: ad.title, description: ad.description, buttonText: ad.button_text, targetUrl: ad.target_url, image: ad.image_url, startsAt: null, endsAt: futureEnd, isActive: true }, ad.id);
+      status.textContent = "Anúncio publicado agora.";
+    }
     if (toggleButton) {
       const ad = adminAds.find(item => item.id === toggleButton.dataset.toggleAdId);
       await window.paranaData.saveAd({ advertiser: ad.advertiser, title: ad.title, description: ad.description, buttonText: ad.button_text, targetUrl: ad.target_url, image: ad.image_url, startsAt: ad.starts_at, endsAt: ad.ends_at, isActive: toggleButton.dataset.toggleValue === "true" }, ad.id);
