@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Paraná Alerta, as notícias que movimentam a cidade.">
+  <title>Paraná Alerta | Notícias da cidade</title>
+  <link rel="stylesheet" href="style.css?v=20260612-2">
+</head>
+<body>
+  <div class="breaking"><strong>Plantão</strong><span>Aguardando atualização da redação</span><time>agora</time></div>
+
+  <header>
+    <div class="topbar container">
+      <button class="menu-button" aria-label="Abrir menu">☰</button>
+      <a class="logo" href="#inicio"><span>PARANÁ</span><strong>ALERTA!</strong></a>
+      <div class="header-actions"><button class="search-button" aria-label="Pesquisar">⌕</button><button class="login-button">Área do jornalista</button></div>
+    </div>
+    <nav class="categories container">
+      <a class="active" href="#inicio" data-section="inicio">Capa</a><a href="#cidade" data-section="cidade">Cidade</a><a href="#policia" data-section="policia">Polícia</a><a href="#economia" data-section="economia">Economia</a><a href="#eventos" data-section="eventos">Eventos</a><a href="#cultura" data-section="cultura">Cultura</a><a href="#opiniao" data-section="opiniao">Opinião</a>
+    </nav>
+  </header>
+
+  <aside class="mobile-menu" aria-hidden="true"><button class="close-mobile">×</button><strong>Explorar</strong><a href="#inicio" data-go="inicio">Capa</a><a href="#cidade" data-go="cidade">Cidade</a><a href="#policia" data-go="policia">Polícia</a><a href="#economia" data-go="economia">Economia</a><a href="#eventos" data-go="eventos">Eventos</a><a href="#cultura" data-go="cultura">Cultura</a><a href="#opiniao" data-go="opiniao">Opinião</a><a href="#sobre" data-static="sobre">Sobre o jornal</a><a href="#contato" data-static="contato">Contato</a></aside>
+  <div class="search-overlay" aria-hidden="true"><div class="search-panel"><button class="close-search">×</button><span class="eyebrow">Pesquisa</span><h2>O que aconteceu na cidade?</h2><input id="site-search" type="search" placeholder="Pesquisa por título, categoria ou autor..." autocomplete="off"><div class="search-filters"><button class="active" data-search-filter="todas">Todas</button><button data-search-filter="cidade">Cidade</button><button data-search-filter="policia">Polícia</button><button data-search-filter="economia">Economia</button><button data-search-filter="eventos">Eventos</button><button data-search-filter="cultura">Cultura</button></div><div class="search-results"></div></div></div>
+
+  <main id="inicio">
+    <div id="home-page">
+    <section class="hero container">
+      <article class="lead-story">
+        <div class="empty-lead"><span>PARANÁ ALERTA</span><h1>A redação está pronta.</h1><p>As notícias publicadas pela equipa aparecerão aqui em destaque.</p><button class="empty-login">Acessar redação</button></div>
+      </article>
+
+      <div class="side-news"><div class="empty-side"><strong>Sem notícias recentes</strong><p>Novas publicações aparecerão nesta área.</p></div></div>
+    </section>
+
+    <section class="latest container" id="cidade">
+      <div class="section-title"><div><span>Direto da redação</span><h2>Recém-publicadas</h2></div></div>
+      <div class="news-grid" id="news-grid">
+        <div class="empty-news">Ainda não existem notícias publicadas.</div>
+      </div>
+    </section>
+
+    <section class="most-read container"><div class="section-title"><div><span>O que está a movimentar a cidade</span><h2>Mais lidas</h2></div></div><div class="ranking-list"><div class="empty-ranking">O ranking será criado conforme as notícias receberem leituras.</div></div></section>
+
+    <section class="ad-strip container"><span>Publicidade</span><div><strong>ANUNCIE AQUI</strong><p>Leve a tua empresa até toda a cidade.</p></div><button class="contact-ad">Conhecer planos</button></section>
+
+    <section class="newsletter"><div class="container newsletter-inner"><div><span class="eyebrow">Não perca nada</span><h2>A cidade acontece.<br>Nós contamos.</h2></div><form id="newsletter-form"><label for="newsletter-email">Receba o resumo do dia</label><div><input id="newsletter-email" type="email" placeholder="teu@email.com" required><button>Quero receber</button></div><small id="newsletter-status">Sem spam. Apenas o que importa.</small></form></div></section>
+    </div>
+
+    <section class="topic-page container" id="topic-page" aria-live="polite">
+      <div class="topic-header"><button class="back-home">← Voltar à capa</button><span class="topic-kicker">Editoria</span><h1 class="topic-title"></h1><p class="topic-description"></p></div>
+      <div class="topic-feature"></div>
+      <div class="section-title topic-list-title"><div><span>Mais desta editoria</span><h2>Últimas publicações</h2></div></div>
+      <div class="news-grid topic-grid"></div>
+    </section>
+
+    <article class="article-page" id="article-page" aria-live="polite">
+      <div class="article-header container"><button class="article-back">← Voltar</button><span class="category article-category"></span><h1 class="article-title"></h1><p class="article-deck"></p><div class="article-byline"><span>Por <strong class="article-author"></strong></span><time>Publicado hoje, às 11:40</time></div></div>
+      <div class="article-hero purple-scene"><span class="article-icon"></span></div>
+      <div class="article-layout container"><div class="share-bar"><span>Partilhar</span><button title="Copiar link">↗</button><button class="like-button" title="Gostei">♡</button><small class="like-count">0</small></div><div class="article-body"><span class="article-body-label">Matéria completa</span><div class="article-content"></div><div class="article-stats"><span class="view-count">0 visualizações</span><button class="author-link">Conhecer a jornalista →</button></div><section class="related"><span class="eyebrow">Continue a ler</span><h2>Notícias relacionadas</h2><div class="related-grid"></div></section><section class="comments"><span class="eyebrow">Comunidade</span><h2>Comentários</h2><form id="comment-form"><input id="comment-name" required placeholder="O teu nome"><textarea id="comment-text" required minlength="3" placeholder="Escreve um comentário"></textarea><button>Publicar comentário</button></form><div class="comment-list"></div></section></div></div>
+    </article>
+
+    <section class="static-page container" id="profile-page"><button class="static-back">← Voltar</button><div class="profile-card"><div class="profile-avatar">B</div><div><span class="eyebrow">Jornalista</span><h1>Bellinha</h1><p>Repórter do Paraná Alerta, apaixonada por contar as histórias que movimentam a cidade.</p><div class="profile-stats"><span><strong class="profile-articles">0</strong> matérias</span><span><strong>1.248</strong> leituras</span></div></div></div></section>
+    <section class="static-page container" id="about-page"><button class="static-back">← Voltar</button><span class="eyebrow">Sobre nós</span><h1>Uma cidade viva merece boas histórias.</h1><p>O Paraná Alerta nasceu para informar os moradores com rapidez, clareza e personalidade. Cobrimos os acontecimentos da cidade e damos espaço às vozes que fazem parte dela.</p><div class="values-grid"><article><strong>01</strong><h2>Rapidez</h2><p>Informação no momento em que acontece.</p></article><article><strong>02</strong><h2>Clareza</h2><p>Notícias simples de entender e fáceis de encontrar.</p></article><article><strong>03</strong><h2>Cidade</h2><p>Conteúdo criado para quem vive o roleplay.</p></article></div></section>
+    <section class="static-page container" id="contact-page"><button class="static-back">← Voltar</button><span class="eyebrow">Contato</span><h1>Fala com a redação.</h1><form id="contact-form"><input id="contact-name" required minlength="2" maxlength="80" placeholder="Nome"><input id="contact-email" type="email" required maxlength="160" placeholder="E-mail"><select id="contact-subject"><option>Sugestão de pauta</option><option>Anunciar no jornal</option><option>Correção de notícia</option><option>Outro assunto</option></select><textarea id="contact-message" required minlength="10" maxlength="3000" placeholder="Como podemos ajudar?"></textarea><button>Enviar mensagem</button><span class="contact-status"></span></form><div class="social-links"><a href="#">Discord</a><a href="#">Instagram</a><a href="#">X / Twitter</a></div></section>
+  </main>
+
+  <footer><div class="container footer-inner"><a class="logo" href="#inicio"><span>PARANÁ</span><strong>ALERTA!</strong></a><p>As notícias que movimentam a tua cidade.</p><span>© 2026 Paraná Alerta</span></div></footer>
+
+  <div class="modal" id="journalist-modal" aria-hidden="true">
+    <div class="modal-card newsroom-modal">
+      <div class="modal-toolbar"><button class="close-modal" aria-label="Fechar painel">×</button></div>
+      <section class="login-view">
+        <span class="eyebrow">Redação Paraná Alerta</span><h2>Bem-vindo de volta.</h2><p>Entra para escrever, rever e publicar notícias da cidade.</p>
+        <form id="login-form"><label>E-mail<input id="login-email" type="email" required placeholder="jornalista@paranaalerta.com"></label><label>Senha<input id="login-password" type="password" required placeholder="••••••••"></label><button type="submit">Entrar na redação</button><span class="login-status"></span></form>
+        <div class="access-switch"><span>Ainda não faz parte da equipe?</span><button type="button" class="show-register">Solicitar cadastro</button></div>
+      </section>
+
+      <section class="register-view" hidden>
+        <span class="eyebrow">Faça parte da equipe</span><h2>Quero ser jornalista.</h2><p>Cria a tua conta. Um administrador analisará o pedido antes de liberar o acesso à redação.</p>
+        <form id="register-form"><label>Nome público<input id="register-name" required minlength="2" maxlength="60" placeholder="Como aparecerá nas notícias"></label><label>E-mail<input id="register-email" type="email" required placeholder="teuemail@exemplo.com"></label><label>Senha<input id="register-password" type="password" required minlength="6" placeholder="Mínimo de 6 caracteres"></label><label>Confirmar senha<input id="register-password-confirm" type="password" required minlength="6" placeholder="Repete a senha"></label><button type="submit">Enviar candidatura</button><span class="register-status"></span></form>
+        <div class="access-switch"><span>Já possui uma conta?</span><button type="button" class="show-login">Voltar ao login</button></div>
+      </section>
+
+      <section class="newsroom-view" hidden>
+        <div class="newsroom-head"><div><span class="eyebrow">Painel editorial</span><h2>Olá, Bellinha.</h2><p>A redação está pronta para mais uma história.</p></div><button class="logout-button">Sair</button></div>
+        <div class="dashboard-stats"><div><strong id="published-count">0</strong><span>Publicadas</span></div><div><strong id="draft-count">0</strong><span>Rascunhos</span></div><div><strong>1.248</strong><span>Leituras hoje</span></div></div>
+        <div class="editor-tabs"><button class="editor-tab active" data-editor-tab="write">Nova notícia</button><button class="editor-tab" data-editor-tab="drafts">Rascunhos</button><button class="editor-tab" data-editor-tab="published">Publicadas</button><button class="editor-tab admin-only" data-editor-tab="messages" hidden>Mensagens <span class="message-badge" hidden>0</span></button><button class="editor-tab admin-only" data-editor-tab="journalists" hidden>Jornalistas <span class="pending-badge" hidden>0</span></button><button class="editor-tab" data-editor-tab="settings">Configurações</button></div>
+        <div class="editor-panel active" data-editor-panel="write">
+          <form id="article-form" novalidate><label>Título<input id="article-title" required placeholder="Título da notícia"></label><label>Categoria<select id="article-category"><option>Cidade</option><option>Polícia</option><option>Economia</option><option>Eventos</option><option>Cultura</option><option>Opinião</option></select></label><label>Resumo<textarea id="article-summary" required placeholder="Conta o essencial da notícia"></textarea></label><label>Texto completo<textarea id="article-content" required placeholder="Escreve a matéria completa. Separa os parágrafos com uma linha em branco."></textarea></label><label>Imagem da notícia<input id="article-image" type="file" accept="image/png,image/jpeg,image/webp"></label><div class="image-preview" hidden><img alt="Pré-visualização da notícia"><button type="button" class="remove-image">Remover imagem</button></div><label>Autor<input id="article-author" required value="Bellinha" placeholder="Nome do jornalista"></label><div class="form-actions"><button type="button" class="preview-button">Pré-visualizar</button><button type="button" class="draft-button">Guardar rascunho</button><button type="submit">Publicar notícia</button></div><span class="form-status"></span></form>
+        </div>
+        <div class="editor-panel" data-editor-panel="drafts"><div class="draft-list"></div></div>
+        <div class="editor-panel" data-editor-panel="published"><div class="published-list"></div></div>
+        <div class="editor-panel" data-editor-panel="messages"><div class="journalist-panel-head"><div><h3>Caixa de entrada</h3><p>Mensagens enviadas pelo formulário público do jornal.</p></div><button type="button" class="refresh-messages">Atualizar</button></div><div class="message-list"></div><span class="message-panel-status"></span></div>
+        <div class="editor-panel" data-editor-panel="journalists"><div class="journalist-panel-head"><div><h3>Equipe editorial</h3><p>Aprove candidaturas e controle o acesso à redação.</p></div><button type="button" class="refresh-journalists">Atualizar</button></div><div class="journalist-list"></div><span class="journalist-status"></span></div>
+        <div class="editor-panel" data-editor-panel="settings"><form id="settings-form"><label>Texto do plantão<input id="breaking-input" maxlength="120" placeholder="Notícia urgente no topo do site"></label><label>Link do Discord<input id="discord-input" type="url" placeholder="https://discord.gg/..."></label><label>Instagram<input id="instagram-input" placeholder="@paranaalerta"></label><button>Guardar configurações</button><span class="settings-status"></span></form></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="delete-modal" aria-hidden="true">
+    <div class="delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="delete-title">
+      <div class="delete-icon">!</div>
+      <span class="eyebrow">Confirmar exclusão</span>
+      <h2 id="delete-title">Apagar esta notícia?</h2>
+      <p>A notícia <strong class="delete-article-title"></strong> será removida da capa, da categoria e da lista de publicadas.</p>
+      <div class="delete-actions"><button class="cancel-delete">Cancelar</button><button class="confirm-delete">Apagar definitivamente</button></div>
+    </div>
+  </div>
+
+  <div class="delete-modal archive-modal" aria-hidden="true">
+    <div class="delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="archive-title">
+      <div class="delete-icon">!</div>
+      <span class="eyebrow">Confirmar retirada</span>
+      <h2 id="archive-title">Retirar do painel?</h2>
+      <p>A conta de <strong class="archive-journalist-name"></strong> desaparecerá da lista e continuará sem acesso à redação.</p>
+      <div class="delete-actions"><button class="cancel-archive">Cancelar</button><button class="confirm-archive">Retirar do painel</button></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js?v=20260612-2"></script>
+  <script src="supabase-client.js?v=20260612-2"></script>
+  <script src="script.js?v=20260612-2"></script>
+</body>
+</html>
