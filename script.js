@@ -421,10 +421,29 @@ function renderPublicAd(ad = null) {
   button.dataset.adUrl = ad.target_url;
 }
 
+function renderSideAd(element, ad) {
+  if (!ad) {
+    element.hidden = true;
+    element.innerHTML = "";
+    element.dataset.adUrl = "";
+    return;
+  }
+  element.hidden = false;
+  element.dataset.adUrl = ad.target_url;
+  element.innerHTML = `<span class="side-ad-label">Publicidade</span>${ad.image_url ? `<img class="side-ad-image" src="${ad.image_url}" alt="${escapeHtml(ad.advertiser)}">` : ""}<div class="side-ad-content"><strong>${escapeHtml(ad.title)}</strong><p>${escapeHtml(ad.description)}</p><small>${escapeHtml(ad.button_text)} →</small></div>`;
+}
+
+document.querySelectorAll(".side-ad").forEach(element => element.addEventListener("click", function () {
+  if (this.dataset.adUrl) window.open(this.dataset.adUrl, "_blank", "noopener");
+}));
+
 async function loadPublicAd() {
   try {
     const ads = await window.paranaData.listAds(false);
-    renderPublicAd(ads.find(isAdCurrentlyActive) || null);
+    const activeAds = ads.filter(isAdCurrentlyActive);
+    renderPublicAd(activeAds[0] || null);
+    renderSideAd(document.querySelector(".side-ad-left"), activeAds[1] || activeAds[0] || null);
+    renderSideAd(document.querySelector(".side-ad-right"), activeAds[2] || activeAds[0] || null);
   } catch (error) {
     console.warn("Não foi possível carregar publicidade:", error.message);
   }
